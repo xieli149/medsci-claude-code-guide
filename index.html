@@ -174,7 +174,7 @@
     h2 { margin: 0; color: var(--brand-dark); font-size: clamp(30px, 4vw, 44px); line-height: 1.2; letter-spacing: -.035em; }
     .section-head p { max-width: 480px; margin: 0; color: var(--muted); }
 
-    .os-switch { display: inline-flex; gap: 7px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(11,75,139,.06); }
+    .os-switch { display: inline-flex; flex-wrap: wrap; gap: 7px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(11,75,139,.06); }
     .os-btn { min-width: 126px; padding: 10px 16px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; cursor: pointer; font-weight: 800; }
     .os-btn.active { color: #fff; background: var(--brand); box-shadow: 0 6px 16px rgba(20,120,223,.25); }
 
@@ -304,8 +304,8 @@
       <div>
         <div class="eyebrow">梅斯医学内部培训 · 安装手册</div>
         <h1>装好 Claude Code，开始让 AI 真正干活</h1>
-        <p class="hero-lead">面向 Windows 与 macOS，使用中国大陆可访问的安装方式，并通过硅基流动接入模型 API。跟着页面复制，约 20–30 分钟完成。</p>
-        <div class="hero-badges"><span>Windows 10+</span><span>macOS 13+</span><span>国内 npm 镜像</span><span>硅基流动 API</span></div>
+        <p class="hero-lead">面向 Windows 个人电脑、Windows 公司电脑与 macOS，使用中国大陆可访问的安装方式，并通过硅基流动接入模型 API。先选择自己的电脑类型，再跟着页面逐条复制。</p>
+        <div class="hero-badges"><span>Windows 个人电脑</span><span>Windows 公司电脑</span><span>macOS</span><span>硅基流动 API</span></div>
       </div>
       <div class="hero-map" aria-label="安装路线">
         <div class="map-item"><span class="map-number">1</span><div><strong>准备 Node.js 22</strong><small>运行 Claude Code 安装包</small></div></div>
@@ -328,12 +328,14 @@
       <div class="section-head">
         <div><div class="kicker">Part 01 · Install</div><h2>先完成 Claude Code 安装</h2></div>
         <div class="os-switch" role="tablist" aria-label="选择操作系统">
-          <button class="os-btn active" data-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
-          <button class="os-btn" data-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
+          <button class="os-btn active" data-os="windows" role="tab" aria-selected="true">⊞ Windows 个人电脑</button>
+          <button class="os-btn" data-os="windows-company" role="tab" aria-selected="false">⊞ Windows 公司电脑</button>
+          <button class="os-btn" data-os="mac" role="tab" aria-selected="false">⌘ Mac 电脑</button>
         </div>
       </div>
 
       <div class="os-panel" data-panel="windows">
+        <div class="callout" style="margin-bottom:18px"><strong>自己的 Windows 电脑请选择这条路线。</strong>如果电脑由公司统一管理、登录账号与管理员账号不同，或用户目录可能在 D 盘，请切换到“Windows 公司电脑”。</div>
         <div class="steps">
           <article class="step">
             <div class="step-index">01</div>
@@ -380,6 +382,68 @@
         </div>
       </div>
 
+      <div class="os-panel" data-panel="windows-company" hidden>
+        <div class="callout warning" style="margin-bottom:18px"><strong>公司电脑请选择这条路线。</strong>不要右键“以管理员身份运行”。安装到 Administrator 后再切回自己的账号，会出现安装成功却找不到 <code>claude</code> 的问题。下面流程已在梅斯医学公司电脑上实际验证成功。</div>
+        <div class="steps">
+          <article class="step">
+            <div class="step-index">01</div>
+            <div><h3>用当前账号打开普通 CMD</h3><p>点击开始菜单，搜索“CMD”或“命令提示符”，直接打开，不要选择“以管理员身份运行”。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 查看当前用户名</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>echo %USERNAME%</pre></div>
+              <p>记住显示的用户名。窗口路径应类似 <code>C:\Users\你的用户名&gt;</code>，不应是 <code>C:\Windows\System32&gt;</code>。</p>
+              <div class="callout danger"><strong>如果显示 Administrator：</strong>先关闭窗口，回到自己的 Windows 账号，再打开普通 CMD。不要继续安装。</div>
+              <label class="check-row"><input type="checkbox" data-check="company-user" /> CMD 显示的是我自己的公司账号</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">02</div>
+            <div><h3>检查 Node.js 和 npm</h3><p>两条命令分别执行，注意 <code>node</code> 和 <code>-v</code> 中间有空格。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 检查 Node.js</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>node -v</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 检查 npm</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm -v</pre></div>
+              <div class="callout"><strong>没有版本号或低于 v22？</strong>绝大多数公司电脑下载 x64 安装包；只有系统信息明确写着 ARM 处理器时才选 ARM64。</div>
+              <div class="download-options">
+                <a class="download-option recommended" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1-x64.msi"><span class="recommend">绝大多数公司电脑选这个</span><strong>Windows x64 安装包 →</strong><small>适合 Intel 或 AMD 处理器。</small><code>node-v22.23.1-x64.msi</code></a>
+                <a class="download-option" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1-arm64.msi"><strong>Windows ARM64 安装包 →</strong><small>仅适合骁龙 Snapdragon 等 ARM 电脑。</small><code>node-v22.23.1-arm64.msi</code></a>
+              </div>
+              <p>双击 <code>.msi</code>，保留默认选项安装。完成后关闭 CMD、重新打开，再分别检查版本。</p>
+              <label class="check-row"><input type="checkbox" data-check="company-node" /> Node.js 已显示 v22 或更高版本</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">03</div>
+            <div><h3>确认当前账号的 npm 目录</h3><p>公司电脑的用户目录可能在 C 盘，也可能在 D 盘。不要照抄别人的路径，以这条命令显示的结果为准。</p>
+              <div class="command"><div class="command-top"><span>查看当前账号的 npm 目录</span><button class="copy-btn" data-copy>复制命令</button></div><pre>npm config get prefix</pre></div>
+              <div class="callout"><strong>结果示例：</strong><code>C:\Users\你的用户名\AppData\Roaming\npm</code> 或 <code>D:\Users\你的用户名\AppData\Roaming\npm</code> 都可能是正常的。把自己电脑显示的完整路径复制保存。</div>
+              <div class="callout danger"><strong>路径里出现 Administrator？</strong>说明 npm 仍指向管理员账号。不要继续，联系培训老师或在自己的普通账号下重新配置、安装。</div>
+              <label class="check-row"><input type="checkbox" data-check="company-prefix" /> npm 路径属于我当前登录的账号</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">04</div>
+            <div><h3>使用国内镜像安装 Claude Code</h3><p>不要一次复制多条。第 1 条执行完，再复制第 2 条。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 切换国内镜像</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>npm config set registry https://registry.npmmirror.com</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 安装 Claude Code</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm install -g @anthropic-ai/claude-code@latest</pre></div>
+              <div class="callout"><strong>看到 <code>changed 2 packages in 3s</code>：</strong>表示已经安装成功，不是报错，不要重复安装。</div>
+              <label class="check-row"><input type="checkbox" data-check="company-install" /> 安装命令已执行完成</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">05</div>
+            <div><h3>把 npm 目录加入当前用户 Path</h3><p>按 <code>Win + S</code> 搜索“环境变量” → 打开“编辑账户的环境变量” → 在上方当前用户的变量中选择 <code>Path</code> →“编辑”→“新建”→ 粘贴第 3 步实际显示的 npm 目录。</p>
+              <div class="callout warning"><strong>只粘贴文件夹路径：</strong>不要带引号，不要添加 <code>claude.cmd</code>，也不要添加 Administrator 账号的目录。</div>
+              <p>保存后，关闭所有 CMD、PowerShell、Windows Terminal 和 VS Code 窗口，再重新打开普通 CMD，分别执行：</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 查找 Claude 命令</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>where claude</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 查看版本</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>claude --version</pre></div>
+              <div class="callout"><strong>仍然无法识别？</strong>先重启电脑再试。如果曾经用管理员窗口安装过，请不要引用 Administrator 的路径，回到当前账号重新执行第 3、4、5 步。</div>
+              <label class="check-row"><input type="checkbox" data-check="company-verify" /> 我已看到 Claude Code 版本号</label>
+            </div>
+          </article>
+        </div>
+      </div>
+
       <div class="os-panel" data-panel="mac" hidden>
         <div class="steps">
           <article class="step">
@@ -389,9 +453,9 @@
 
           <article class="step">
             <div class="step-index">02</div>
-            <div><h3>检查 Node.js 版本</h3><p>如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
-              <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
-npm -v</pre></div>
+            <div><h3>检查 Node.js 版本</h3><p>两条命令分别执行。如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 检查 Node.js</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>node -v</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 检查 npm</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm -v</pre></div>
               <div class="callout"><strong>没有版本号或低于 v22？</strong>macOS 只有一个通用安装包，Apple 芯片和 Intel 芯片都可以直接使用。</div>
               <div class="download-options">
                 <a class="download-option recommended" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1.pkg"><span class="recommend">所有 Mac 都选这个</span><strong>下载 macOS 通用安装包 →</strong><small>兼容 Apple M1/M2/M3/M4/M5 芯片与 Intel 芯片。</small><code>node-v22.23.1.pkg</code></a>
@@ -403,22 +467,22 @@ npm -v</pre></div>
 
           <article class="step">
             <div class="step-index">03</div>
-            <div><h3>设置个人安装目录与国内镜像</h3><p>先把全局工具放到自己的用户目录，避免 macOS 权限报错；再切换国内下载源。</p>
-              <div class="command"><div class="command-top"><span>Terminal · 可整段复制</span><button class="copy-btn" data-copy>复制全部</button></div><pre>mkdir -p "$HOME/.npm-global"
-npm config set prefix "$HOME/.npm-global"
-grep -q '.npm-global/bin' "$HOME/.zshrc" 2&gt;/dev/null || echo 'export PATH="$HOME/.npm-global/bin:$PATH"' &gt;&gt; "$HOME/.zshrc"
-export PATH="$HOME/.npm-global/bin:$PATH"
-npm config set registry https://registry.npmmirror.com</pre></div>
+            <div><h3>设置个人安装目录与国内镜像</h3><p>按顺序逐条执行。先把全局工具放到自己的用户目录，避免 macOS 权限报错；再切换国内下载源。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 创建个人目录</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>mkdir -p "$HOME/.npm-global"</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 设置 npm 目录</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm config set prefix "$HOME/.npm-global"</pre></div>
+              <div class="command"><div class="command-top"><span>第 3 条 · 写入终端 Path</span><button class="copy-btn" data-copy>复制第 3 条</button></div><pre>grep -q '.npm-global/bin' "$HOME/.zshrc" 2&gt;/dev/null || echo 'export PATH="$HOME/.npm-global/bin:$PATH"' &gt;&gt; "$HOME/.zshrc"</pre></div>
+              <div class="command"><div class="command-top"><span>第 4 条 · 让 Path 立即生效</span><button class="copy-btn" data-copy>复制第 4 条</button></div><pre>export PATH="$HOME/.npm-global/bin:$PATH"</pre></div>
+              <div class="command"><div class="command-top"><span>第 5 条 · 切换国内镜像</span><button class="copy-btn" data-copy>复制第 5 条</button></div><pre>npm config set registry https://registry.npmmirror.com</pre></div>
               <label class="check-row"><input type="checkbox" data-check="mac-prep" /> 以上命令已执行完成</label>
             </div>
           </article>
 
           <article class="step">
             <div class="step-index">04</div>
-            <div><h3>安装并验证 Claude Code</h3><p>不要在命令前添加 <code>sudo</code>。</p>
-              <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制全部</button></div><pre>npm install -g @anthropic-ai/claude-code@latest
-claude --version
-claude doctor</pre></div>
+            <div><h3>安装并验证 Claude Code</h3><p>不要在命令前添加 <code>sudo</code>，三条命令分别执行。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 安装 Claude Code</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>npm install -g @anthropic-ai/claude-code@latest</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 查看版本</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>claude --version</pre></div>
+              <div class="command"><div class="command-top"><span>第 3 条 · 遇到问题时诊断</span><button class="copy-btn" data-copy>复制第 3 条</button></div><pre>claude doctor</pre></div>
               <div class="callout"><strong>说明：</strong><code>doctor</code> 可能提示尚未登录，这是正常的。下一部分会接入硅基流动。</div>
               <label class="check-row"><input type="checkbox" data-check="mac-verify" /> 我已看到 Claude Code 版本号</label>
             </div>
@@ -514,6 +578,13 @@ claude doctor</pre></div>
       <div class="section-head"><div><div class="kicker">Part 04 · Troubleshooting</div><h2>遇到报错，先对照这里</h2></div><p>安装问题和 API 问题要分开判断：能输出版本号代表程序已装好；能正常回答才代表 API 已接通。</p></div>
       <details><summary>Windows：输入 node-v 后提示无法识别</summary><div><p>命令中间少了空格。正确写法是 <code>node -v</code>，不是 <code>node-v</code>。输入 <code>node</code> 会进入 Node.js 交互环境；如需退出，输入 <code>.exit</code> 或连续按两次 <code>Ctrl + C</code>。</p></div></details>
       <details><summary>Windows：看到 changed 2 packages in 3s</summary><div><p>这不是报错，而是 npm 已经成功安装或更新了 Claude Code。看到 <code>PS C:\Users\...&gt;</code> 再次出现后，不要重复安装，继续运行 <code>claude --version</code> 即可。</p></div></details>
+      <details><summary>Windows 公司电脑：管理员账号安装后，自己的账号无法使用</summary><div>
+        <p>Windows 的 npm 全局目录跟账号有关。用 Administrator 安装后，Claude Code 可能落在 <code>C:\Users\Administrator\AppData\Roaming\npm</code>；切回公司账号后，自然找不到该命令。</p>
+        <p><strong>正确处理：</strong>关闭管理员窗口，用自己的公司账号打开普通 CMD。先分别确认用户名和 npm 目录：</p>
+        <div class="command"><div class="command-top"><span>第 1 条 · 查看用户名</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>echo %USERNAME%</pre></div>
+        <div class="command"><div class="command-top"><span>第 2 条 · 查看 npm 目录</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm config get prefix</pre></div>
+        <p>确认 npm 目录属于当前账号后，在这个普通 CMD 中重新安装 Claude Code，并把该目录加入<strong>当前用户</strong>的 Path。不要把 Administrator 的 npm 目录加入自己的 Path。</p>
+      </div></details>
       <details><summary>Windows：安装成功，但 claude 无法识别（Path 修复）</summary><div>
         <p>先关闭所有 PowerShell、CMD 和 VS Code 窗口，重新打开 <strong>PowerShell</strong>，再试一次 <code>claude --version</code>。仍然无法识别时，按下面步骤处理。</p>
         <p><strong>第 1 步：查看 npm 的安装目录。</strong></p>
