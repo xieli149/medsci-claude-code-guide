@@ -351,9 +351,9 @@ npm -v</pre></div>
 
           <article class="step">
             <div class="step-index">03</div>
-            <div><h3>切换国内镜像并安装</h3><p>第一条把 npm 下载源切换到国内 npmmirror；第二条安装 Claude Code 最新版。</p>
-              <div class="command"><div class="command-top"><span>PowerShell · 逐行执行</span><button class="copy-btn" data-copy>复制全部</button></div><pre>npm config set registry https://registry.npmmirror.com
-npm install -g @anthropic-ai/claude-code@latest</pre></div>
+            <div><h3>切换国内镜像并安装</h3><p>不要一次复制两条。先复制并执行第 1 条，完成后再复制并执行第 2 条。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 切换国内镜像</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>npm config set registry https://registry.npmmirror.com</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 安装 Claude Code</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm install -g @anthropic-ai/claude-code@latest</pre></div>
               <div class="callout danger"><strong>只安装这个官方包名：</strong><code>@anthropic-ai/claude-code</code>。不要安装名字相似的第三方包。</div>
               <label class="check-row"><input type="checkbox" data-check="win-install" /> 安装命令执行完成，没有红色报错</label>
             </div>
