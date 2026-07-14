@@ -216,6 +216,10 @@
     .download-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px; margin-top: 16px; padding: 18px; border: 1px solid #cfe3f7; border-radius: 15px; background: #f8fbff; }
     .download-card strong { display: block; color: var(--brand-dark); }
     .download-card small { color: var(--muted); }
+    .screenshot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+    .screenshot-card { overflow: hidden; border: 1px solid #cfe3f7; border-radius: 15px; background: #fff; box-shadow: 0 8px 22px rgba(11,75,139,.06); }
+    .screenshot-card img { display: block; width: 100%; height: auto; }
+    .screenshot-card figcaption { margin: 0; padding: 10px 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
     .download-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
     .download-option { position: relative; display: grid; gap: 5px; min-height: 112px; padding: 17px; border: 1px solid #cfe3f7; border-radius: 15px; color: var(--brand-dark); background: #f8fbff; text-decoration: none; }
     .download-option:hover { transform: translateY(-1px); border-color: var(--brand); box-shadow: 0 10px 24px rgba(20,120,223,.12); }
@@ -281,6 +285,7 @@
       .os-switch { width: 100%; }
       .os-btn { flex: 1; min-width: 0; }
       .download-card { align-items: stretch; }
+      .screenshot-grid { grid-template-columns: 1fr; }
       .download-options { grid-template-columns: 1fr; }
       .method-grid { grid-template-columns: 1fr; }
       .actions, .actions .btn { width: 100%; }
@@ -434,6 +439,12 @@
             <div class="step-index">05</div>
             <div><h3>把 npm 目录加入当前用户 Path</h3><p>按 <code>Win + S</code> 搜索“环境变量” → 打开“编辑账户的环境变量” → 在上方当前用户的变量中选择 <code>Path</code> →“编辑”→“新建”→ 粘贴第 3 步实际显示的 npm 目录。</p>
               <div class="callout warning"><strong>只粘贴文件夹路径：</strong>不要带引号，不要添加 <code>claude.cmd</code>，也不要添加 Administrator 账号的目录。</div>
+              <div class="callout"><strong>公司电脑截图参考：</strong>先从“系统属性 → 高级 → 环境变量”进入，再在上方“当前用户的用户变量”里处理。截图里示例路径是 <code>D:\Users\danni.zheng\AppData\Roaming\npm</code>，你的电脑可能是 C 盘或其他用户名，以第 3 步命令返回为准。</div>
+              <div class="callout danger"><strong>不要只看截图新建变量：</strong>Windows 能不能直接输入 <code>claude</code>，最终取决于 <code>Path</code> 里是否包含这个 npm 目录。如果公司电脑按截图新增了 <code>npm</code> 变量，也要确保 <code>Path</code> 中包含该目录或引用了 <code>%npm%</code>。</div>
+              <div class="screenshot-grid" aria-label="公司电脑环境变量截图参考">
+                <figure class="screenshot-card"><img src="assets/company-env-vars-open.png" alt="Windows 系统属性高级页和环境变量窗口，红框标出环境变量按钮与用户变量新建按钮" loading="lazy"><figcaption>先打开“高级 → 环境变量”，在上方当前用户变量区域操作，不去改别人的账号路径。</figcaption></figure>
+                <figure class="screenshot-card"><img src="assets/company-env-vars-npm-path.png" alt="Windows 用户变量编辑窗口，变量值填写当前用户 AppData Roaming npm 目录" loading="lazy"><figcaption>路径示例：<code>D:\Users\danni.zheng\AppData\Roaming\npm</code>。实际填写自己电脑 <code>npm config get prefix</code> 返回的目录。</figcaption></figure>
+              </div>
               <p>保存后，关闭所有 CMD、PowerShell、Windows Terminal 和 VS Code 窗口，再重新打开普通 CMD，分别执行：</p>
               <div class="command"><div class="command-top"><span>第 1 条 · 查找 Claude 命令</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>where claude</pre></div>
               <div class="command"><div class="command-top"><span>第 2 条 · 查看版本</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>claude --version</pre></div>
