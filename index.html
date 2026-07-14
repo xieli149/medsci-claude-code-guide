@@ -335,9 +335,9 @@
 
           <article class="step">
             <div class="step-index">02</div>
-            <div><h3>检查 Node.js 版本</h3><p>先运行下面两条命令。如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
-              <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
-npm -v</pre></div>
+            <div><h3>检查 Node.js 和 npm 版本</h3><p>分别复制下面两条命令。注意：<code>node</code> 和 <code>-v</code> 中间有一个空格，不能写成 <code>node-v</code>。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 检查 Node.js</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>node -v</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 检查 npm</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm -v</pre></div>
               <div class="callout"><strong>没有版本号或低于 v22？</strong>不要进入文件列表，直接按电脑类型点击下面的安装包。</div>
               <div class="download-options">
                 <a class="download-option recommended" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1-x64.msi"><span class="recommend">绝大多数 Windows 电脑选这个</span><strong>Windows 普通电脑（x64）→</strong><small>适合 Intel 或 AMD 处理器的 Windows 电脑。</small><code>node-v22.23.1-x64.msi</code></a>
@@ -354,6 +354,7 @@ npm -v</pre></div>
             <div><h3>切换国内镜像并安装</h3><p>不要一次复制两条。先复制并执行第 1 条，完成后再复制并执行第 2 条。</p>
               <div class="command"><div class="command-top"><span>第 1 条 · 切换国内镜像</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>npm config set registry https://registry.npmmirror.com</pre></div>
               <div class="command"><div class="command-top"><span>第 2 条 · 安装 Claude Code</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>npm install -g @anthropic-ai/claude-code@latest</pre></div>
+              <div class="callout"><strong>看到 <code>changed 2 packages in 3s</code> 怎么办？</strong>这表示安装或更新已经成功，不是报错。看到 PowerShell 提示符重新出现后，就可以进入下一步。</div>
               <div class="callout danger"><strong>只安装这个官方包名：</strong><code>@anthropic-ai/claude-code</code>。不要安装名字相似的第三方包。</div>
               <label class="check-row"><input type="checkbox" data-check="win-install" /> 安装命令执行完成，没有红色报错</label>
             </div>
@@ -361,10 +362,11 @@ npm -v</pre></div>
 
           <article class="step">
             <div class="step-index">04</div>
-            <div><h3>验证安装结果</h3><p>能看到版本号，就代表 Claude Code 程序本身已经安装成功。</p>
-              <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>claude --version
-claude doctor</pre></div>
+            <div><h3>验证安装结果</h3><p>先执行第 1 条。能看到版本号，就代表 Claude Code 程序本身已经安装成功；只有遇到问题时才执行第 2 条诊断命令。</p>
+              <div class="command"><div class="command-top"><span>第 1 条 · 查看 Claude Code 版本</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>claude --version</pre></div>
+              <div class="command"><div class="command-top"><span>第 2 条 · 遇到问题时运行诊断</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>claude doctor</pre></div>
               <div class="callout"><strong>说明：</strong><code>doctor</code> 可能提示尚未登录，这是正常的。下一部分会用硅基流动 API 代替 Claude 官方账号。</div>
+              <div class="callout warning"><strong>提示“claude 不是内部或外部命令”？</strong>通常是 Windows 没有把 npm 安装目录加入 Path。不要重复安装，先看页面下方“Windows：安装成功，但 claude 无法识别”的处理方法。</div>
               <label class="check-row"><input type="checkbox" data-check="win-verify" /> 我已看到 Claude Code 版本号</label>
             </div>
           </article>
@@ -487,7 +489,23 @@ claude</pre></div>
 
     <section id="troubleshoot">
       <div class="section-head"><div><div class="kicker">Part 04 · Troubleshooting</div><h2>遇到报错，先对照这里</h2></div><p>安装问题和 API 问题要分开判断：能输出版本号代表程序已装好；能正常回答才代表 API 已接通。</p></div>
-      <details><summary>提示 “claude 不是内部或外部命令” / command not found</summary><div><p>先关闭当前终端并重新打开，再运行 <code>claude --version</code>。macOS 还可以运行 <code>source ~/.zshrc</code> 后重试。</p></div></details>
+      <details><summary>Windows：输入 node-v 后提示无法识别</summary><div><p>命令中间少了空格。正确写法是 <code>node -v</code>，不是 <code>node-v</code>。输入 <code>node</code> 会进入 Node.js 交互环境；如需退出，输入 <code>.exit</code> 或连续按两次 <code>Ctrl + C</code>。</p></div></details>
+      <details><summary>Windows：看到 changed 2 packages in 3s</summary><div><p>这不是报错，而是 npm 已经成功安装或更新了 Claude Code。看到 <code>PS C:\Users\...&gt;</code> 再次出现后，不要重复安装，继续运行 <code>claude --version</code> 即可。</p></div></details>
+      <details><summary>Windows：安装成功，但 claude 无法识别（Path 修复）</summary><div>
+        <p>先关闭所有 PowerShell、CMD 和 VS Code 窗口，重新打开 <strong>PowerShell</strong>，再试一次 <code>claude --version</code>。仍然无法识别时，按下面步骤处理。</p>
+        <p><strong>第 1 步：查看 npm 的安装目录。</strong></p>
+        <div class="command"><div class="command-top"><span>PowerShell · 查看目录</span><button class="copy-btn" data-copy>复制命令</button></div><pre>npm config get prefix</pre></div>
+        <p>记下显示的路径，常见结果是 <code>C:\Users\你的用户名\AppData\Roaming\npm</code>。</p>
+        <p><strong>第 2 步：确认 Claude 命令文件已经存在。</strong></p>
+        <div class="command"><div class="command-top"><span>PowerShell · 检查文件</span><button class="copy-btn" data-copy>复制命令</button></div><pre>Get-ChildItem "$(npm config get prefix)\claude*"</pre></div>
+        <p>如果看到 <code>claude.cmd</code>、<code>claude.ps1</code>，说明安装成功，只是 Path 没配置。</p>
+        <p><strong>第 3 步：把目录加入用户 Path。</strong>按 <code>Win + S</code> 搜索“环境变量” → 打开“编辑账户的环境变量” → 选择用户变量中的 <code>Path</code> →“编辑”→“新建”→ 粘贴第 1 步显示的路径 → 连续点击“确定”。</p>
+        <p><strong>第 4 步：</strong>关闭所有终端，重新打开 PowerShell，再运行：</p>
+        <div class="command"><div class="command-top"><span>PowerShell · 重新验证</span><button class="copy-btn" data-copy>复制命令</button></div><pre>claude --version</pre></div>
+        <div class="callout warning"><strong>注意 CMD 与 PowerShell 不同：</strong>本教程所有带 <code>$(...)</code> 的命令都要在 PowerShell 中运行。窗口开头显示 <code>PS C:\</code> 才是 PowerShell；只显示 <code>C:\</code> 通常是 CMD。</div>
+      </div></details>
+      <details><summary>Windows：claude --version 成功，但输入 claude 没有弹出窗口</summary><div><p>Claude Code 不会弹出独立软件窗口，它的界面就在当前 PowerShell 中。不要在 <code>C:\Windows\System32</code> 目录启动；回到上面的“完成第一次真实任务”，先进入桌面的练习文件夹，再输入 <code>claude</code>。</p></div></details>
+      <details><summary>macOS：提示 command not found</summary><div><p>先关闭终端并重新打开，再运行 <code>claude --version</code>。仍然找不到时，运行 <code>source ~/.zshrc</code> 后重试。</p></div></details>
       <details><summary>npm 出现 EACCES / permission denied</summary><div><p>macOS 不要使用 sudo。回到上面的“设置个人安装目录与国内镜像”，完整执行一次，再重新安装。</p></div></details>
       <details><summary>提示找不到 native binary package</summary><div><p>通常是 npm 禁用了 optional dependencies。检查 <code>.npmrc</code> 中不要有 <code>optional=false</code>，然后重新运行安装命令，不要添加 <code>--omit=optional</code>。</p></div></details>
       <details><summary>启动后一直要求 Claude 登录</summary><div><p>先确认 CC Switch 中 Claude → SiliconFlow 卡片已“当前启用”。再进入 CC Switch“设置 → 通用”，开启“跳过 Claude Code 初次安装确认”，关闭终端后重开。</p></div></details>
