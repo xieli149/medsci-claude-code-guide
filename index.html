@@ -224,6 +224,12 @@
     .download-option strong { font-size: 16px; }
     .download-option small { color: var(--muted); line-height: 1.55; }
     .download-option code { width: fit-content; padding: 3px 6px; border-radius: 6px; color: var(--brand-deep); background: #fff; font-size: 11px; overflow-wrap: anywhere; }
+    .method-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+    .method-card { position: relative; display: grid; align-content: start; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 17px; background: #f8fbff; }
+    .method-card.recommended { border: 2px solid var(--brand); background: var(--brand-pale); }
+    .method-card h4 { margin: 0; color: var(--brand-dark); font-size: 19px; }
+    .method-card p { font-size: 14px; }
+    .method-badge { width: fit-content; padding: 4px 9px; border-radius: 8px; color: var(--brand-deep); background: #fff; font-size: 12px; font-weight: 850; }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 15px; border: 1px solid var(--brand); border-radius: 11px; color: #fff; background: var(--brand); text-decoration: none; font-weight: 800; box-shadow: 0 7px 18px rgba(20,120,223,.18); }
     .btn:hover { transform: translateY(-1px); }
@@ -276,6 +282,7 @@
       .os-btn { flex: 1; min-width: 0; }
       .download-card { align-items: stretch; }
       .download-options { grid-template-columns: 1fr; }
+      .method-grid { grid-template-columns: 1fr; }
       .actions, .actions .btn { width: 100%; }
       .sources { grid-template-columns: 1fr; }
       footer { flex-direction: column; }
@@ -313,7 +320,7 @@
 
     <div class="quick-note">
       <div class="icon">✓</div>
-      <div><strong>培训推荐路线已核验</strong><p>Claude Code 使用 npm 国内镜像安装；API 使用本站跨平台配置助手直接接入硅基流动，无需 CC Switch 和 Claude 官方订阅。</p></div>
+      <div><strong>培训推荐路线已核验</strong><p>Claude Code 使用 npm 国内镜像安装；API 可选择本站配置助手，或在有 VPN 时使用 CC Switch 图形界面。无需 Claude 官方订阅。</p></div>
       <div class="date">更新于 2026-07-14</div>
     </div>
 
@@ -421,7 +428,7 @@ claude doctor</pre></div>
     </section>
 
     <section id="siliconflow">
-      <div class="section-head"><div><div class="kicker">Part 02 · Connect API</div><h2>接入硅基流动 API</h2></div><p>培训使用硅基流动，不需要 Claude 官方订阅，也不再安装 CC Switch。下载本站配置助手，输入 API Key 即可完成。</p></div>
+      <div class="section-head"><div><div class="kicker">Part 02 · Connect API</div><h2>接入硅基流动 API</h2></div><p>培训使用硅基流动，不需要 Claude 官方订阅。无 VPN 使用本站配置助手；有 VPN 可以使用更直观的 CC Switch。</p></div>
       <div class="steps">
         <article class="step">
           <div class="step-index">05</div>
@@ -434,7 +441,7 @@ claude doctor</pre></div>
         <article class="step">
           <div class="step-index">06</div>
           <div><h3>创建 API Key</h3><p>进入“API 密钥”页面，点击“新建 API 密钥”。复制以 <code>sk-</code> 开头的密钥，先保存在本机安全位置。</p>
-            <div class="download-card"><div><strong>API Key 是你的调用密码</strong><small>页面不会要求你把 Key 粘贴到这里；稍后只粘贴到本机运行的配置助手。</small></div><div class="actions"><a class="btn secondary" href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noopener">打开 API 密钥页 ↗</a></div></div>
+            <div class="download-card"><div><strong>API Key 是你的调用密码</strong><small>页面不会要求你把 Key 粘贴到这里；稍后只粘贴到本机配置助手或 CC Switch。</small></div><div class="actions"><a class="btn secondary" href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noopener">打开 API 密钥页 ↗</a></div></div>
             <div class="callout danger"><strong>不要泄露 API Key：</strong>不要发到群里、不要放进截图、不要写入代码或提交到 GitHub。泄露后应立即在控制台删除并新建。</div>
             <label class="check-row"><input type="checkbox" data-check="sf-key" /> 我已创建并安全保存 API Key</label>
           </div>
@@ -442,33 +449,41 @@ claude doctor</pre></div>
 
         <article class="step">
           <div class="step-index">07</div>
-          <div><h3>下载硅基流动配置助手</h3><p>不需要 CC Switch。这个小文件同时支持 Windows 和 macOS，只负责把已核验的硅基流动参数写入 Claude Code 配置。</p>
-            <div class="download-card"><div><strong>梅斯医学培训配置助手</strong><small>文件名：<code>configure-siliconflow.mjs</code>。配置时会隐藏 API Key，并在修改旧配置前自动备份。</small></div><div class="actions"><a class="btn" href="./configure-siliconflow.mjs" download>直接下载配置助手 ↓</a><a class="btn secondary" href="./configure-siliconflow.mjs" target="_blank" rel="noopener">查看文件内容 ↗</a></div></div>
-            <div class="callout"><strong>为什么可以不用 CC Switch？</strong>配置助手复现了 CC Switch 当前 SiliconFlow 预设的核心参数，并自动完成首次引导标记；它不会上传、记录或回传你的 API Key。</div>
-            <label class="check-row"><input type="checkbox" data-check="config-helper-download" /> 我已下载 configure-siliconflow.mjs</label>
+          <div><h3>选择一种配置方式</h3><p>两种方式效果相同，只选择一种即可。不要先后使用两种方式，以免后一次配置覆盖前一次。</p>
+            <div class="method-grid">
+              <div class="method-card recommended"><span class="method-badge">无 VPN / 国内直接使用</span><h4>方式 A：本站配置助手</h4><p>Windows、macOS 通用，不访问 GitHub。输入 API Key 后自动写入配置并备份旧文件。</p><div class="actions"><a class="btn" href="./configure-siliconflow.mjs" download>下载配置助手 ↓</a><a class="btn secondary" href="./configure-siliconflow.mjs" target="_blank" rel="noopener">查看源码 ↗</a></div></div>
+              <div class="method-card"><span class="method-badge">有 VPN / 图形界面更方便</span><h4>方式 B：CC Switch</h4><p>适合能够打开 GitHub 的学员。通过图形界面选择 SiliconFlow 预设，无需手动配置环境变量。</p><div class="actions"><a class="btn" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener">下载 CC Switch ↗</a><a class="btn secondary" href="https://ccswitch.io/" target="_blank" rel="noopener">项目官网 ↗</a></div></div>
+            </div>
+            <div class="callout warning"><strong>怎么选？</strong>打不开 CC Switch 下载页就选方式 A；能正常下载并希望使用图形界面就选方式 B。</div>
           </div>
         </article>
 
         <article class="step">
           <div class="step-index">08</div>
-          <div><h3>运行配置助手</h3><p>确认文件保存在“下载”文件夹，然后选择自己的系统，只复制对应的一条命令。</p>
-            <div class="os-switch" role="tablist" aria-label="配置助手系统选择">
-              <button class="os-btn active" data-api-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
-              <button class="os-btn" data-api-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
-            </div>
-            <div class="os-panel" data-api-panel="windows">
-              <div class="command"><div class="command-top"><span>Windows PowerShell · 只复制这一条</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node "$HOME\Downloads\configure-siliconflow.mjs"</pre></div>
-            </div>
-            <div class="os-panel" data-api-panel="mac" hidden>
-              <div class="command"><div class="command-top"><span>macOS 终端 · 只复制这一条</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node "$HOME/Downloads/configure-siliconflow.mjs"</pre></div>
-            </div>
-            <ol class="substeps">
-              <li><b>1</b><span>终端提示输入 API Key 时，粘贴刚才复制的 <code>sk-...</code>。输入内容只显示为星号。</span></li>
-              <li><b>2</b><span>按回车，看到绿色含义的 <strong>✓ 配置成功</strong> 即完成。</span></li>
-              <li><b>3</b><span>关闭终端并重新打开，然后进入练习文件夹运行 <code>claude</code>。</span></li>
-            </ol>
-            <div class="callout warning"><strong>提示找不到配置文件？</strong>先确认浏览器把文件保存到了“下载 / Downloads”文件夹，并确认文件名没有变成 <code>configure-siliconflow (1).mjs</code>。</div>
-            <label class="check-row"><input type="checkbox" data-check="sf-enable" /> 我已看到“✓ 配置成功”</label>
+          <div><h3>完成你选择的配置方式</h3><p>展开自己选择的方式操作。完成其中一种后，直接进入下一部分。</p>
+            <details open><summary>方式 A：运行本站配置助手（无 VPN）</summary><div>
+              <p>确认文件保存在“下载”文件夹，然后选择自己的系统，只复制对应的一条命令。</p>
+              <div class="os-switch" role="tablist" aria-label="配置助手系统选择">
+                <button class="os-btn active" data-api-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
+                <button class="os-btn" data-api-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
+              </div>
+              <div class="os-panel" data-api-panel="windows"><div class="command"><div class="command-top"><span>Windows PowerShell · 只复制这一条</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node "$HOME\Downloads\configure-siliconflow.mjs"</pre></div></div>
+              <div class="os-panel" data-api-panel="mac" hidden><div class="command"><div class="command-top"><span>macOS 终端 · 只复制这一条</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node "$HOME/Downloads/configure-siliconflow.mjs"</pre></div></div>
+              <ol class="substeps"><li><b>1</b><span>提示输入 API Key 时，粘贴 <code>sk-...</code>，输入内容只显示为星号。</span></li><li><b>2</b><span>按回车，看到 <strong>✓ 配置成功</strong> 即完成。</span></li><li><b>3</b><span>关闭终端并重新打开，然后进入练习文件夹运行 <code>claude</code>。</span></li></ol>
+              <div class="callout warning"><strong>提示找不到配置文件？</strong>确认文件在“下载 / Downloads”文件夹，且文件名没有变成 <code>configure-siliconflow (1).mjs</code>。</div>
+              <label class="check-row"><input type="checkbox" data-check="sf-helper-enabled" /> 方式 A 已显示“✓ 配置成功”</label>
+            </div></details>
+            <details><summary>方式 B：使用 CC Switch（有 VPN）</summary><div>
+              <ol class="substeps">
+                <li><b>1</b><span>安装并打开 CC Switch。Windows 下载 <code>Windows.msi</code>；macOS 下载 <code>macOS.dmg</code>。</span></li>
+                <li><b>2</b><span>在顶部应用切换器中选择 <strong>Claude</strong>，点击右上角 <strong>＋</strong>。</span></li>
+                <li><b>3</b><span>在“预设”中选择 <strong>SiliconFlow</strong>（紫色图标）。</span></li>
+                <li><b>4</b><span>把硅基流动 API Key 粘贴到 <strong>API Key</strong>，点击“添加”。</span></li>
+                <li><b>5</b><span>在 SiliconFlow 卡片上点击 <strong>启用</strong>，看到蓝色边框和“当前启用”。</span></li>
+              </ol>
+              <div class="callout"><strong>首次启动要求登录？</strong>打开 CC Switch“设置 → 通用”，开启“跳过 Claude Code 初次安装确认”，然后重新启动 Claude Code。</div>
+              <label class="check-row"><input type="checkbox" data-check="sf-ccswitch-enabled" /> 方式 B 已显示“当前启用”</label>
+            </div></details>
           </div>
         </article>
       </div>
@@ -481,14 +496,14 @@ claude doctor</pre></div>
         <button class="os-btn" data-run-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
       </div>
       <div class="os-panel" data-run-panel="windows">
-        <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>mkdir "$HOME\Desktop\Claude练习"
-cd "$HOME\Desktop\Claude练习"
-claude</pre></div>
+        <div class="command"><div class="command-top"><span>第 1 条 · 创建练习文件夹</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>mkdir "$HOME\Desktop\Claude练习"</pre></div>
+        <div class="command"><div class="command-top"><span>第 2 条 · 进入练习文件夹</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>cd "$HOME\Desktop\Claude练习"</pre></div>
+        <div class="command"><div class="command-top"><span>第 3 条 · 启动 Claude Code</span><button class="copy-btn" data-copy>复制第 3 条</button></div><pre>claude</pre></div>
       </div>
       <div class="os-panel" data-run-panel="mac" hidden>
-        <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制命令</button></div><pre>mkdir -p "$HOME/Desktop/Claude练习"
-cd "$HOME/Desktop/Claude练习"
-claude</pre></div>
+        <div class="command"><div class="command-top"><span>第 1 条 · 创建练习文件夹</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>mkdir -p "$HOME/Desktop/Claude练习"</pre></div>
+        <div class="command"><div class="command-top"><span>第 2 条 · 进入练习文件夹</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>cd "$HOME/Desktop/Claude练习"</pre></div>
+        <div class="command"><div class="command-top"><span>第 3 条 · 启动 Claude Code</span><button class="copy-btn" data-copy>复制第 3 条</button></div><pre>claude</pre></div>
       </div>
       <div class="callout warning"><strong>首次授权提示：</strong>Claude Code 会询问是否信任当前文件夹。这里只是自己新建的练习文件夹，可以确认信任；不要随意信任来源不明的代码目录。</div>
       <div class="command"><div class="command-top"><span>启动后，把这段话发给 Claude Code</span><button class="copy-btn" data-copy>复制练习任务</button></div><pre>请在当前文件夹创建一个“梅斯医学 AI 工具体验”网页：包含蓝色标题、三个功能卡片和当前日期。完成后告诉我创建了哪些文件，以及如何打开查看。先不要安装任何额外软件。</pre></div>
@@ -516,7 +531,7 @@ claude</pre></div>
       <details><summary>macOS：提示 command not found</summary><div><p>先关闭终端并重新打开，再运行 <code>claude --version</code>。仍然找不到时，运行 <code>source ~/.zshrc</code> 后重试。</p></div></details>
       <details><summary>npm 出现 EACCES / permission denied</summary><div><p>macOS 不要使用 sudo。回到上面的“设置个人安装目录与国内镜像”，完整执行一次，再重新安装。</p></div></details>
       <details><summary>提示找不到 native binary package</summary><div><p>通常是 npm 禁用了 optional dependencies。检查 <code>.npmrc</code> 中不要有 <code>optional=false</code>，然后重新运行安装命令，不要添加 <code>--omit=optional</code>。</p></div></details>
-      <details><summary>配置后启动仍然要求 Claude 登录</summary><div><p>重新运行配置助手，确认最后显示“✓ 配置成功”，然后关闭所有终端窗口再重新打开。如果下载过多次配置助手，确认运行的是文件名没有编号的 <code>configure-siliconflow.mjs</code>。</p></div></details>
+      <details><summary>配置后启动仍然要求 Claude 登录</summary><div><p><strong>方式 A：</strong>重新运行配置助手，确认最后显示“✓ 配置成功”，然后关闭所有终端再重新打开。<strong>方式 B：</strong>在 CC Switch“设置 → 通用”中开启“跳过 Claude Code 初次安装确认”，确认 SiliconFlow 卡片显示“当前启用”，再重启终端。</p></div></details>
       <details><summary>出现 401 / invalid API key / 余额不足</summary><div><p>401 通常表示 Key 填错或已失效：去硅基流动控制台重新复制。余额不足则先检查账户余额和模型计费；API Key 不要带多余空格。</p></div></details>
       <details><summary>Windows 上命令执行能力不完整</summary><div><p>Claude Code 原生 Windows 可以使用 PowerShell。需要更完整的 Git/Bash 工作流时，可另行安装 Git for Windows；这不是本次完成安装与首次体验的必需项。</p></div></details>
     </section>
