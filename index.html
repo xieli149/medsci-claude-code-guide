@@ -216,6 +216,14 @@
     .download-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px; margin-top: 16px; padding: 18px; border: 1px solid #cfe3f7; border-radius: 15px; background: #f8fbff; }
     .download-card strong { display: block; color: var(--brand-dark); }
     .download-card small { color: var(--muted); }
+    .download-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .download-option { position: relative; display: grid; gap: 5px; min-height: 112px; padding: 17px; border: 1px solid #cfe3f7; border-radius: 15px; color: var(--brand-dark); background: #f8fbff; text-decoration: none; }
+    .download-option:hover { transform: translateY(-1px); border-color: var(--brand); box-shadow: 0 10px 24px rgba(20,120,223,.12); }
+    .download-option.recommended { padding-top: 28px; border: 2px solid var(--brand); background: var(--brand-pale); }
+    .download-option .recommend { position: absolute; top: 0; left: 14px; padding: 3px 9px; border-radius: 0 0 8px 8px; color: #fff; background: var(--brand); font-size: 11px; font-weight: 850; }
+    .download-option strong { font-size: 16px; }
+    .download-option small { color: var(--muted); line-height: 1.55; }
+    .download-option code { width: fit-content; padding: 3px 6px; border-radius: 6px; color: var(--brand-deep); background: #fff; font-size: 11px; overflow-wrap: anywhere; }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 15px; border: 1px solid var(--brand); border-radius: 11px; color: #fff; background: var(--brand); text-decoration: none; font-weight: 800; box-shadow: 0 7px 18px rgba(20,120,223,.18); }
     .btn:hover { transform: translateY(-1px); }
@@ -267,6 +275,7 @@
       .os-switch { width: 100%; }
       .os-btn { flex: 1; min-width: 0; }
       .download-card { align-items: stretch; }
+      .download-options { grid-template-columns: 1fr; }
       .actions, .actions .btn { width: 100%; }
       .sources { grid-template-columns: 1fr; }
       footer { flex-direction: column; }
@@ -329,8 +338,13 @@
             <div><h3>检查 Node.js 版本</h3><p>先运行下面两条命令。如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
               <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
 npm -v</pre></div>
-              <div class="download-card"><div><strong>没有版本号或低于 v22？</strong><small>从 npmmirror 国内镜像下载 Node.js 22 LTS，选择文件名末尾为 <code>x64.msi</code> 的安装包。</small></div><div class="actions"><a class="btn secondary" href="https://registry.npmmirror.com/binary.html?path=node/latest-v22.x/" target="_blank" rel="noopener">打开国内下载页 ↗</a></div></div>
-              <div class="callout warning">安装 Node.js 时一路保留默认选项。安装完成后<strong>关闭 PowerShell，再重新打开</strong>，然后再次检查版本。</div>
+              <div class="callout"><strong>没有版本号或低于 v22？</strong>不要进入文件列表，直接按电脑类型点击下面的安装包。</div>
+              <div class="download-options">
+                <a class="download-option recommended" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1-x64.msi"><span class="recommend">绝大多数 Windows 电脑选这个</span><strong>Windows 普通电脑（x64）→</strong><small>适合 Intel 或 AMD 处理器的 Windows 电脑。</small><code>node-v22.23.1-x64.msi</code></a>
+                <a class="download-option" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1-arm64.msi"><strong>Windows ARM 电脑 →</strong><small>仅适合骁龙 Snapdragon 等 ARM 处理器电脑。</small><code>node-v22.23.1-arm64.msi</code></a>
+              </div>
+              <div class="callout warning"><strong>不确定就选第一个 x64。</strong>只有“设置 → 系统 → 系统信息 → 系统类型”明确写着“基于 ARM 的处理器”时，才选 ARM64。不要下载 x86、zip、7z 或 tar.gz。</div>
+              <div class="callout">双击下载的 <code>.msi</code>，安装时一路保留默认选项。完成后<strong>关闭 PowerShell，再重新打开</strong>，然后再次检查版本。</div>
               <label class="check-row"><input type="checkbox" data-check="win-node" /> Node.js 已显示 v22 或更高版本</label>
             </div>
           </article>
@@ -369,8 +383,11 @@ claude doctor</pre></div>
             <div><h3>检查 Node.js 版本</h3><p>如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
               <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
 npm -v</pre></div>
-              <div class="download-card"><div><strong>没有版本号或低于 v22？</strong><small>从国内镜像下载 Node.js 22 LTS。Apple 芯片选 <code>arm64.pkg</code>，Intel 芯片选 <code>x64.pkg</code>。</small></div><div class="actions"><a class="btn secondary" href="https://registry.npmmirror.com/binary.html?path=node/latest-v22.x/" target="_blank" rel="noopener">打开国内下载页 ↗</a></div></div>
-              <div class="callout warning">不知道芯片类型？点击左上角  →“关于本机”。显示 M1/M2/M3/M4/M5 选 arm64；显示 Intel 选 x64。</div>
+              <div class="callout"><strong>没有版本号或低于 v22？</strong>macOS 只有一个通用安装包，Apple 芯片和 Intel 芯片都可以直接使用。</div>
+              <div class="download-options">
+                <a class="download-option recommended" href="https://registry.npmmirror.com/-/binary/node/v22.23.1/node-v22.23.1.pkg"><span class="recommend">所有 Mac 都选这个</span><strong>下载 macOS 通用安装包 →</strong><small>兼容 Apple M1/M2/M3/M4/M5 芯片与 Intel 芯片。</small><code>node-v22.23.1.pkg</code></a>
+              </div>
+              <div class="callout warning">只下载上面的 <code>.pkg</code>。不要下载 darwin、tar.gz、tar.xz 等压缩包。双击 PKG 后一路按默认选项安装。</div>
               <label class="check-row"><input type="checkbox" data-check="mac-node" /> Node.js 已显示 v22 或更高版本</label>
             </div>
           </article>
