@@ -517,6 +517,7 @@
           <div class="step-index">06</div>
           <div><h3>创建 API Key</h3><p>进入“API 密钥”页面，点击“新建 API 密钥”。复制以 <code>sk-</code> 开头的密钥，先保存在本机安全位置。</p>
             <div class="download-card"><div><strong>API Key 是你的调用密码</strong><small>稍后只粘贴到自己电脑的 CMD 或 CC Switch，不要发给任何人。</small></div><div class="actions"><a class="btn secondary" href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noopener">打开 API 密钥页 ↗</a></div></div>
+            <div class="callout warning"><strong>什么时候替换 API Key？</strong>只在后面“保存本次使用的 API Key”那一条命令里替换一次：把 <code>你的API_KEY</code> 换成自己以 <code>sk-</code> 开头的真实密钥。后面命令里的 <code>%SF_KEY%</code> 或 <code>$SF_KEY</code> 是自动引用，不要再手动替换。</div>
             <div class="callout danger"><strong>不要泄露 API Key：</strong>不要发到群里、不要放进截图、不要写入代码或提交到 GitHub。泄露后应立即在控制台删除并新建。</div>
             <label class="check-row"><input type="checkbox" data-check="sf-key" /> 我已创建并安全保存 API Key</label>
           </div>
@@ -552,12 +553,13 @@
             <div class="os-panel" data-api-panel="windows">
             <details open><summary>方式 A：Windows 使用普通 CMD（已实测成功）</summary><div>
               <div class="callout danger"><strong>API Key 不要发到聊天里：</strong>下面命令只在 Windows 的普通 CMD 中执行，不要“以管理员身份运行”，也不要复制到 Mac 终端。每次只复制一条。</div>
-              <p><strong>第 1 步：把 API Key 临时保存在当前 CMD。</strong>复制后，先把 <code>你的API_KEY</code> 替换成自己新建的真实 Key，再按回车。</p>
-              <div class="command"><div class="command-top"><span>CMD · 保存本次使用的 API Key</span><button class="copy-btn" data-copy>复制命令</button></div><pre>set "SF_KEY=你的API_KEY"</pre></div>
+              <p><strong>第 1 步：把 API Key 临时保存在当前 CMD。</strong>这一条是模板命令，不能直接回车。复制后只把等号右边的 <code>你的API_KEY</code> 替换成真实 Key，<code>SF_KEY</code> 这几个字不要改。</p>
+              <div class="command"><div class="command-top"><span>CMD · 模板命令：先替换你的API_KEY</span><button class="copy-btn" data-copy>复制模板命令</button></div><pre>set "SF_KEY=你的API_KEY"</pre></div>
+              <div class="callout"><strong>稳妥做法：</strong>先复制到记事本，把 <code>你的API_KEY</code> 改成 <code>sk-...</code>，确认整行类似 <code>set "SF_KEY=sk-xxxx"</code>，再复制到 CMD 回车。</div>
 
               <p><strong>第 2 步：测试 SiliconFlow 的 GLM-5.2 接口。</strong></p>
               <div class="command"><div class="command-top"><span>CMD · 测试 API Key 和模型</span><button class="copy-btn" data-copy>复制测试命令</button></div><pre>curl.exe -X POST "https://api.siliconflow.cn/v1/messages" -H "Authorization: Bearer %SF_KEY%" -H "Content-Type: application/json" -d "{\"model\":\"zai-org/GLM-5.2\",\"max_tokens\":64,\"messages\":[{\"role\":\"user\",\"content\":\"请只回复：连接成功\"}]}"</pre></div>
-              <div class="callout"><strong>看到返回内容中有“连接成功”：</strong>说明 API Key、网络和 <code>zai-org/GLM-5.2</code> 都正常。返回中出现 <code>thinking</code> 不是报错。</div>
+              <div class="callout"><strong>这里不要替换 <code>%SF_KEY%</code>：</strong>它会自动读取第 1 步保存的 API Key。看到返回内容中有“连接成功”，说明 API Key、网络和 <code>zai-org/GLM-5.2</code> 都正常。返回中出现 <code>thinking</code> 不是报错。</div>
 
               <p><strong>第 3 步：在当前 CMD 临时接入 Claude Code。</strong>下面 7 条必须逐条执行。</p>
               <div class="command"><div class="command-top"><span>第 1 条 · 清除旧 Token</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>set "ANTHROPIC_AUTH_TOKEN="</pre></div>
@@ -572,7 +574,7 @@
               <div class="command"><div class="command-top"><span>CMD · 测试 Claude Code</span><button class="copy-btn" data-copy>复制测试命令</button></div><pre>claude -p "请只回复：Claude Code接入成功" --model "zai-org/GLM-5.2"</pre></div>
               <div class="callout"><strong>看到“Claude Code接入成功”：</strong>代表配置已验证，可以永久保存。</div>
 
-              <p><strong>第 5 步：永久保存配置。</strong>下面 6 条逐条执行；<code>%SF_KEY%</code> 会自动使用第 1 步保存在当前 CMD 中的 Key。</p>
+              <p><strong>第 5 步：永久保存配置。</strong>下面 6 条逐条执行；<code>%SF_KEY%</code> 会自动使用第 1 步保存在当前 CMD 中的 Key，不要把它改成真实 Key。</p>
               <div class="command"><div class="command-top"><span>第 1 条 · 永久保存 API 地址</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>setx ANTHROPIC_BASE_URL "https://api.siliconflow.cn"</pre></div>
               <div class="command"><div class="command-top"><span>第 2 条 · 永久保存 API Key</span><button class="copy-btn" data-copy>复制第 2 条</button></div><pre>setx ANTHROPIC_API_KEY "%SF_KEY%"</pre></div>
               <div class="command"><div class="command-top"><span>第 3 条 · 永久保存主模型</span><button class="copy-btn" data-copy>复制第 3 条</button></div><pre>setx ANTHROPIC_MODEL "zai-org/GLM-5.2"</pre></div>
@@ -587,12 +589,13 @@
             <details open><summary>方式 B：Mac 使用终端（macOS 专用）</summary><div>
               <div class="callout danger"><strong>不要复制 Windows 命令：</strong>下面只使用 Mac 终端的 <code>export</code>、<code>$变量</code> 和 <code>~/.zshrc</code>。每次只复制一条，执行完成后再复制下一条。</div>
 
-              <p><strong>第 1 步：把 API Key 临时保存在当前终端。</strong>复制后，把 <code>你的API_KEY</code> 替换成自己的真实 Key，再按回车。</p>
-              <div class="command"><div class="command-top"><span>Mac 终端 · 保存本次使用的 API Key</span><button class="copy-btn" data-copy>复制命令</button></div><pre>export SF_KEY='你的API_KEY'</pre></div>
+              <p><strong>第 1 步：把 API Key 临时保存在当前终端。</strong>这一条是模板命令，不能直接回车。复制后只把引号里的 <code>你的API_KEY</code> 替换成真实 Key，<code>SF_KEY</code> 这几个字不要改。</p>
+              <div class="command"><div class="command-top"><span>Mac 终端 · 模板命令：先替换你的API_KEY</span><button class="copy-btn" data-copy>复制模板命令</button></div><pre>export SF_KEY='你的API_KEY'</pre></div>
+              <div class="callout"><strong>稳妥做法：</strong>先复制到备忘录，把 <code>你的API_KEY</code> 改成 <code>sk-...</code>，确认整行类似 <code>export SF_KEY='sk-xxxx'</code>，再复制到终端回车。</div>
 
               <p><strong>第 2 步：测试 SiliconFlow 的 GLM-5.2 接口。</strong></p>
               <div class="command"><div class="command-top"><span>Mac 终端 · 测试 API Key 和模型</span><button class="copy-btn" data-copy>复制测试命令</button></div><pre>curl -X POST "https://api.siliconflow.cn/v1/messages" -H "Authorization: Bearer $SF_KEY" -H "Content-Type: application/json" -d '{"model":"zai-org/GLM-5.2","max_tokens":64,"messages":[{"role":"user","content":"请只回复：连接成功"}]}'</pre></div>
-              <div class="callout"><strong>看到返回内容中有“连接成功”：</strong>说明 API Key、网络和 <code>zai-org/GLM-5.2</code> 都正常。返回中出现 <code>thinking</code> 不是报错。</div>
+              <div class="callout"><strong>这里不要替换 <code>$SF_KEY</code>：</strong>它会自动读取第 1 步保存的 API Key。看到返回内容中有“连接成功”，说明 API Key、网络和 <code>zai-org/GLM-5.2</code> 都正常。返回中出现 <code>thinking</code> 不是报错。</div>
 
               <p><strong>第 3 步：在当前 Mac 终端临时接入 Claude Code。</strong>下面 7 条逐条执行。</p>
               <div class="command"><div class="command-top"><span>第 1 条 · 清除旧 Token</span><button class="copy-btn" data-copy>复制第 1 条</button></div><pre>unset ANTHROPIC_AUTH_TOKEN</pre></div>
