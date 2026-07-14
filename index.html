@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="梅斯医学内部培训：在中国网络环境下安装 Claude Code，并通过硅基流动接入 API。" />
+  <title>Claude Code 安装与接入｜梅斯医学内部培训</title>
+  <style>
+    :root {
+      --brand: #1478df;
+      --brand-deep: #0756ac;
+      --brand-dark: #073b72;
+      --brand-pale: #eaf4ff;
+      --cyan: #22b8cf;
+      --ink: #17243a;
+      --muted: #5f6f84;
+      --line: #dbe7f3;
+      --paper: #ffffff;
+      --canvas: #f5f9fd;
+      --ok: #0c9a72;
+      --warn: #bc7100;
+      --danger: #c63c53;
+      --shadow: 0 20px 60px rgba(11, 75, 139, 0.10);
+      --radius: 22px;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(34, 184, 207, 0.12), transparent 27rem),
+        linear-gradient(180deg, #f9fcff 0%, var(--canvas) 100%);
+      line-height: 1.7;
+    }
+    button, a { font: inherit; }
+    a { color: var(--brand-deep); }
+    code { font-family: var(--mono); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(219, 231, 243, 0.92);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(18px);
+    }
+    .topbar-inner {
+      width: min(1180px, calc(100% - 40px));
+      min-height: 68px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--brand-dark);
+      text-decoration: none;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+    }
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      background: linear-gradient(145deg, var(--brand), var(--brand-deep));
+      box-shadow: 0 8px 20px rgba(20, 120, 223, 0.28);
+      font-weight: 900;
+    }
+    .topnav { display: flex; gap: 7px; align-items: center; }
+    .topnav a {
+      padding: 8px 11px;
+      border-radius: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .topnav a:hover { color: var(--brand); background: var(--brand-pale); }
+
+    main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 34px 0 90px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.28fr) minmax(300px, .72fr);
+      gap: 48px;
+      align-items: center;
+      min-height: 480px;
+      padding: 64px;
+      border-radius: 32px;
+      color: #fff;
+      background:
+        linear-gradient(120deg, rgba(4, 48, 96, .97), rgba(7, 86, 172, .94) 55%, rgba(20, 120, 223, .91)),
+        #0756ac;
+      box-shadow: 0 30px 80px rgba(7, 86, 172, .24);
+    }
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 50%;
+    }
+    .hero > * { min-width: 0; }
+    .hero::before { width: 470px; height: 470px; right: -160px; top: -260px; }
+    .hero::after { width: 330px; height: 330px; right: 70px; bottom: -250px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding: 7px 11px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #54e3eb; box-shadow: 0 0 0 5px rgba(84,227,235,.12); }
+    h1 { max-width: 760px; margin: 0; font-size: clamp(44px, 6.3vw, 78px); line-height: 1.03; letter-spacing: -0.055em; }
+    .hero-lead { max-width: 720px; margin: 24px 0 0; color: #d9ecff; font-size: 20px; line-height: 1.7; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 30px; }
+    .hero-badges span { padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.12); font-size: 13px; font-weight: 700; }
+    .hero-map {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 22px;
+      background: rgba(255,255,255,.09);
+      backdrop-filter: blur(8px);
+      width: 100%;
+      min-width: 0;
+    }
+    .map-item { min-width: 0; display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px; border-radius: 13px; background: rgba(3, 41, 82, .27); }
+    .map-item div { min-width: 0; }
+    .map-number { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: #fff; color: var(--brand-deep); font-weight: 900; }
+    .map-item strong { display: block; font-size: 14px; }
+    .map-item small { display: block; overflow-wrap: anywhere; color: #c9e3ff; }
+    .arrow { text-align: center; color: #75dce7; line-height: .6; }
+
+    .quick-note {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin: 24px 0 48px;
+      padding: 20px 24px;
+      border: 1px solid #b9dbff;
+      border-radius: 18px;
+      background: #edf7ff;
+    }
+    .quick-note .icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: #fff; background: var(--brand); font-size: 20px; }
+    .quick-note strong { display: block; color: var(--brand-dark); }
+    .quick-note p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+    .date { color: var(--brand-deep); font-size: 13px; font-weight: 750; white-space: nowrap; }
+
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 22px; margin: 54px 0 22px; }
+    .kicker { margin-bottom: 5px; color: var(--brand); font-size: 13px; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+    h2 { margin: 0; color: var(--brand-dark); font-size: clamp(30px, 4vw, 44px); line-height: 1.2; letter-spacing: -.035em; }
+    .section-head p { max-width: 480px; margin: 0; color: var(--muted); }
+
+    .os-switch { display: inline-flex; gap: 7px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(11,75,139,.06); }
+    .os-btn { min-width: 126px; padding: 10px 16px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; cursor: pointer; font-weight: 800; }
+    .os-btn.active { color: #fff; background: var(--brand); box-shadow: 0 6px 16px rgba(20,120,223,.25); }
+
+    .steps { display: grid; gap: 18px; }
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr);
+      gap: 22px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .step-index { width: 58px; height: 58px; display: grid; place-items: center; border: 1px solid #c9e2fb; border-radius: 17px; color: var(--brand); background: var(--brand-pale); font-size: 22px; font-weight: 900; }
+    .step h3 { margin: 2px 0 6px; color: var(--brand-dark); font-size: 23px; letter-spacing: -.02em; }
+    .step p { margin: 0; color: var(--muted); }
+    .step-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+    .pill { padding: 5px 9px; border-radius: 8px; color: var(--brand-deep); background: var(--brand-pale); font-size: 12px; font-weight: 750; }
+    .pill.optional { color: #76601d; background: #fff7d6; }
+    .check-row { display: flex; align-items: center; gap: 9px; margin-top: 18px; color: var(--muted); font-size: 14px; font-weight: 650; cursor: pointer; user-select: none; }
+    .check-row input { width: 19px; height: 19px; accent-color: var(--ok); }
+    .check-row:has(input:checked) { color: var(--ok); }
+
+    .command { position: relative; margin-top: 14px; overflow: hidden; border: 1px solid #203b5c; border-radius: 14px; background: #0d1d31; }
+    .command-top { display: flex; justify-content: space-between; align-items: center; min-height: 38px; padding: 0 9px 0 15px; border-bottom: 1px solid rgba(255,255,255,.08); color: #91a9c4; font-size: 12px; }
+    .copy-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid rgba(255,255,255,.14); border-radius: 8px; color: #dceaff; background: rgba(255,255,255,.06); cursor: pointer; font-size: 12px; font-weight: 750; }
+    .copy-btn:hover { background: rgba(255,255,255,.12); }
+    .copy-btn.copied { color: #78f0c4; border-color: rgba(120,240,196,.35); }
+    pre { margin: 0; padding: 18px; overflow-x: auto; color: #e9f3ff; font-family: var(--mono); font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+    .prompt { color: #64d9e4; user-select: none; }
+
+    .callout { margin-top: 16px; padding: 14px 16px; border-left: 4px solid var(--brand); border-radius: 0 12px 12px 0; color: #40536a; background: #f1f7fd; font-size: 14px; }
+    .callout strong { color: var(--brand-dark); }
+    .callout.warning { border-left-color: var(--warn); background: #fff8e8; }
+    .callout.danger { border-left-color: var(--danger); background: #fff1f3; }
+
+    .download-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px; margin-top: 16px; padding: 18px; border: 1px solid #cfe3f7; border-radius: 15px; background: #f8fbff; }
+    .download-card strong { display: block; color: var(--brand-dark); }
+    .download-card small { color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 15px; border: 1px solid var(--brand); border-radius: 11px; color: #fff; background: var(--brand); text-decoration: none; font-weight: 800; box-shadow: 0 7px 18px rgba(20,120,223,.18); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.secondary { color: var(--brand-deep); background: #fff; box-shadow: none; }
+
+    .substeps { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
+    .substeps li { display: grid; grid-template-columns: 30px 1fr; gap: 11px; align-items: start; color: #40536a; }
+    .substeps b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9px; color: var(--brand); background: var(--brand-pale); font-size: 13px; }
+    .substeps strong { color: var(--brand-dark); }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: 0 10px 30px rgba(11,75,139,.06); }
+    .card .card-icon { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 15px; border-radius: 13px; color: var(--brand); background: var(--brand-pale); font-size: 19px; }
+    .card h3 { margin: 0 0 7px; color: var(--brand-dark); font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    details { border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    details + details { margin-top: 10px; }
+    summary { padding: 17px 19px; color: var(--brand-dark); cursor: pointer; font-weight: 800; }
+    details > div { padding: 0 19px 18px; color: var(--muted); }
+    details p { margin: 0 0 9px; }
+
+    .sources { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .source { display: block; padding: 16px; border: 1px solid var(--line); border-radius: 14px; color: var(--brand-dark); background: #fff; text-decoration: none; font-weight: 750; }
+    .source small { display: block; margin-top: 3px; color: var(--muted); font-weight: 500; }
+
+    footer { margin-top: 56px; padding: 28px 0 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 13px; }
+    .os-panel[hidden] { display: none; }
+
+    @media (max-width: 900px) {
+      .topnav { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 44px 34px; }
+      .hero-map { grid-template-columns: repeat(2, 1fr); }
+      .arrow { display: none; }
+      .cards { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+    }
+    @media (max-width: 640px) {
+      main, .topbar-inner { width: min(100% - 24px, 1180px); }
+      main { padding-top: 14px; }
+      .hero { min-height: auto; padding: 38px 22px; border-radius: 22px; }
+      h1 { font-size: 43px; }
+      .hero-lead { font-size: 17px; }
+      .hero-map { grid-template-columns: 1fr; }
+      .quick-note { grid-template-columns: auto 1fr; padding: 16px; }
+      .date { grid-column: 2; }
+      .step { grid-template-columns: 1fr; padding: 22px 18px; }
+      .step-index { width: 48px; height: 48px; }
+      .os-switch { width: 100%; }
+      .os-btn { flex: 1; min-width: 0; }
+      .download-card { align-items: stretch; }
+      .actions, .actions .btn { width: 100%; }
+      .sources { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="#top"><span class="logo-mark">M</span><span>梅斯医学 · AI 内训</span></a>
+      <nav class="topnav" aria-label="页面导航">
+        <a href="#install">安装</a><a href="#siliconflow">接入 API</a><a href="#first-run">首次运行</a><a href="#troubleshoot">排错</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">梅斯医学内部培训 · 安装手册</div>
+        <h1>装好 Claude Code，开始让 AI 真正干活</h1>
+        <p class="hero-lead">面向 Windows 与 macOS，使用中国大陆可访问的安装方式，并通过硅基流动接入模型 API。跟着页面复制，约 20–30 分钟完成。</p>
+        <div class="hero-badges"><span>Windows 10+</span><span>macOS 13+</span><span>国内 npm 镜像</span><span>硅基流动 API</span></div>
+      </div>
+      <div class="hero-map" aria-label="安装路线">
+        <div class="map-item"><span class="map-number">1</span><div><strong>准备 Node.js 22</strong><small>运行 Claude Code 安装包</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="map-item"><span class="map-number">2</span><div><strong>安装 Claude Code</strong><small>使用 npmmirror 国内镜像</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="map-item"><span class="map-number">3</span><div><strong>接入硅基流动</strong><small>注册、创建 API Key</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="map-item"><span class="map-number">4</span><div><strong>完成首次任务</strong><small>在真实文件夹中启动</small></div></div>
+      </div>
+    </section>
+
+    <div class="quick-note">
+      <div class="icon">✓</div>
+      <div><strong>培训推荐路线已核验</strong><p>Claude Code 使用 npm 国内镜像安装；API 通过硅基流动官方推荐的 CC Switch 预设接入。无需 Claude 官方订阅。</p></div>
+      <div class="date">更新于 2026-07-14</div>
+    </div>
+
+    <section id="install">
+      <div class="section-head">
+        <div><div class="kicker">Part 01 · Install</div><h2>先完成 Claude Code 安装</h2></div>
+        <div class="os-switch" role="tablist" aria-label="选择操作系统">
+          <button class="os-btn active" data-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
+          <button class="os-btn" data-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
+        </div>
+      </div>
+
+      <div class="os-panel" data-panel="windows">
+        <div class="steps">
+          <article class="step">
+            <div class="step-index">01</div>
+            <div><h3>打开 PowerShell</h3><p>点击开始菜单，搜索“PowerShell”并打开普通窗口。无需“以管理员身份运行”。</p><div class="callout"><strong>看一眼窗口开头：</strong>出现 <code>PS C:\Users\你的名字&gt;</code>，说明打开正确。</div><label class="check-row"><input type="checkbox" data-check="win-powershell" /> 我已打开 PowerShell</label></div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">02</div>
+            <div><h3>检查 Node.js 版本</h3><p>先运行下面两条命令。如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
+              <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
+npm -v</pre></div>
+              <div class="download-card"><div><strong>没有版本号或低于 v22？</strong><small>从 npmmirror 国内镜像下载 Node.js 22 LTS，选择文件名末尾为 <code>x64.msi</code> 的安装包。</small></div><div class="actions"><a class="btn secondary" href="https://registry.npmmirror.com/binary.html?path=node/latest-v22.x/" target="_blank" rel="noopener">打开国内下载页 ↗</a></div></div>
+              <div class="callout warning">安装 Node.js 时一路保留默认选项。安装完成后<strong>关闭 PowerShell，再重新打开</strong>，然后再次检查版本。</div>
+              <label class="check-row"><input type="checkbox" data-check="win-node" /> Node.js 已显示 v22 或更高版本</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">03</div>
+            <div><h3>切换国内镜像并安装</h3><p>第一条把 npm 下载源切换到国内 npmmirror；第二条安装 Claude Code 最新版。</p>
+              <div class="command"><div class="command-top"><span>PowerShell · 逐行执行</span><button class="copy-btn" data-copy>复制全部</button></div><pre>npm config set registry https://registry.npmmirror.com
+npm install -g @anthropic-ai/claude-code@latest</pre></div>
+              <div class="callout danger"><strong>只安装这个官方包名：</strong><code>@anthropic-ai/claude-code</code>。不要安装名字相似的第三方包。</div>
+              <label class="check-row"><input type="checkbox" data-check="win-install" /> 安装命令执行完成，没有红色报错</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">04</div>
+            <div><h3>验证安装结果</h3><p>能看到版本号，就代表 Claude Code 程序本身已经安装成功。</p>
+              <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>claude --version
+claude doctor</pre></div>
+              <div class="callout"><strong>说明：</strong><code>doctor</code> 可能提示尚未登录，这是正常的。下一部分会用硅基流动 API 代替 Claude 官方账号。</div>
+              <label class="check-row"><input type="checkbox" data-check="win-verify" /> 我已看到 Claude Code 版本号</label>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="os-panel" data-panel="mac" hidden>
+        <div class="steps">
+          <article class="step">
+            <div class="step-index">01</div>
+            <div><h3>打开“终端”</h3><p>按 <code>Command + 空格</code> 打开聚焦搜索，输入“终端”或“Terminal”，回车打开。</p><label class="check-row"><input type="checkbox" data-check="mac-terminal" /> 我已打开终端</label></div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">02</div>
+            <div><h3>检查 Node.js 版本</h3><p>如果第一条显示 <code>v22</code> 或更高版本，直接进入下一步。</p>
+              <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制命令</button></div><pre>node -v
+npm -v</pre></div>
+              <div class="download-card"><div><strong>没有版本号或低于 v22？</strong><small>从国内镜像下载 Node.js 22 LTS。Apple 芯片选 <code>arm64.pkg</code>，Intel 芯片选 <code>x64.pkg</code>。</small></div><div class="actions"><a class="btn secondary" href="https://registry.npmmirror.com/binary.html?path=node/latest-v22.x/" target="_blank" rel="noopener">打开国内下载页 ↗</a></div></div>
+              <div class="callout warning">不知道芯片类型？点击左上角  →“关于本机”。显示 M1/M2/M3/M4/M5 选 arm64；显示 Intel 选 x64。</div>
+              <label class="check-row"><input type="checkbox" data-check="mac-node" /> Node.js 已显示 v22 或更高版本</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">03</div>
+            <div><h3>设置个人安装目录与国内镜像</h3><p>先把全局工具放到自己的用户目录，避免 macOS 权限报错；再切换国内下载源。</p>
+              <div class="command"><div class="command-top"><span>Terminal · 可整段复制</span><button class="copy-btn" data-copy>复制全部</button></div><pre>mkdir -p "$HOME/.npm-global"
+npm config set prefix "$HOME/.npm-global"
+grep -q '.npm-global/bin' "$HOME/.zshrc" 2&gt;/dev/null || echo 'export PATH="$HOME/.npm-global/bin:$PATH"' &gt;&gt; "$HOME/.zshrc"
+export PATH="$HOME/.npm-global/bin:$PATH"
+npm config set registry https://registry.npmmirror.com</pre></div>
+              <label class="check-row"><input type="checkbox" data-check="mac-prep" /> 以上命令已执行完成</label>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-index">04</div>
+            <div><h3>安装并验证 Claude Code</h3><p>不要在命令前添加 <code>sudo</code>。</p>
+              <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制全部</button></div><pre>npm install -g @anthropic-ai/claude-code@latest
+claude --version
+claude doctor</pre></div>
+              <div class="callout"><strong>说明：</strong><code>doctor</code> 可能提示尚未登录，这是正常的。下一部分会接入硅基流动。</div>
+              <label class="check-row"><input type="checkbox" data-check="mac-verify" /> 我已看到 Claude Code 版本号</label>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="siliconflow">
+      <div class="section-head"><div><div class="kicker">Part 02 · Connect API</div><h2>接入硅基流动 API</h2></div><p>培训使用硅基流动，不需要 Claude 官方订阅。通过 CC Switch 的 SiliconFlow 预设接入，少改配置，也方便以后切换模型。</p></div>
+      <div class="steps">
+        <article class="step">
+          <div class="step-index">05</div>
+          <div><h3>注册账号并领取可用额度</h3><p>使用培训专属链接进入硅基流动，完成注册与平台要求的认证。注册链接附带活动额度，实际到账以注册页与账户余额显示为准。</p>
+            <div class="download-card"><div><strong>硅基流动培训注册链接</strong><small>注册完成后，在控制台右上角进入“账户余额”确认额度。</small></div><div class="actions"><a class="btn" href="https://cloud.siliconflow.cn/i/HVYCu5q2" target="_blank" rel="noopener">注册 / 登录硅基流动 ↗</a></div></div>
+            <label class="check-row"><input type="checkbox" data-check="sf-register" /> 我已完成注册并进入控制台</label>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-index">06</div>
+          <div><h3>创建 API Key</h3><p>进入“API 密钥”页面，点击“新建 API 密钥”。复制以 <code>sk-</code> 开头的密钥，先保存在本机安全位置。</p>
+            <div class="download-card"><div><strong>API Key 是你的调用密码</strong><small>页面不会要求你把 Key 粘贴到这里；稍后只粘贴到 CC Switch。</small></div><div class="actions"><a class="btn secondary" href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noopener">打开 API 密钥页 ↗</a></div></div>
+            <div class="callout danger"><strong>不要泄露 API Key：</strong>不要发到群里、不要放进截图、不要写入代码或提交到 GitHub。泄露后应立即在控制台删除并新建。</div>
+            <label class="check-row"><input type="checkbox" data-check="sf-key" /> 我已创建并安全保存 API Key</label>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-index">07</div>
+          <div><h3>安装 CC Switch</h3><p>CC Switch 是开源的跨平台配置工具，硅基流动官方文档推荐用它为 Claude Code 添加 SiliconFlow 预设。</p>
+            <div class="download-card"><div><strong>按电脑系统下载</strong><small>Windows 选 <code>Windows.msi</code>；macOS 选 <code>macOS.dmg</code>。如果 GitHub 较慢，可请培训讲师提供现场安装包。</small></div><div class="actions"><a class="btn" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener">下载 CC Switch ↗</a><a class="btn secondary" href="https://ccswitch.io/" target="_blank" rel="noopener">查看项目官网 ↗</a></div></div>
+            <div class="callout warning"><strong>macOS 首次打开被拦截：</strong>进入“系统设置 → 隐私与安全性”，找到 CC Switch，点击“仍要打开”。只从上面的项目官方链接下载安装。</div>
+            <label class="check-row"><input type="checkbox" data-check="ccswitch-install" /> 我已打开 CC Switch</label>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-index">08</div>
+          <div><h3>添加并启用 SiliconFlow 预设</h3><p>按顺序操作，整个过程不需要手动编辑配置文件。</p>
+            <ol class="substeps">
+              <li><b>1</b><span>在 CC Switch 顶部应用切换器中选择 <strong>Claude</strong>。</span></li>
+              <li><b>2</b><span>点击右上角 <strong>＋</strong>，在“预设”中选择 <strong>SiliconFlow</strong>（紫色图标）。</span></li>
+              <li><b>3</b><span>确认端点自动显示 <code>https://api.siliconflow.cn</code>，模型由预设自动填充。</span></li>
+              <li><b>4</b><span>把刚才创建的 API Key 粘贴到 <strong>API Key</strong>，点击“添加”。</span></li>
+              <li><b>5</b><span>回到供应商列表，在 SiliconFlow 卡片上点击 <strong>启用</strong>，看到蓝色边框和“当前启用”。</span></li>
+            </ol>
+            <div class="callout"><strong>首次启动仍要求登录？</strong>在 CC Switch 打开“设置 → 通用”，开启“跳过 Claude Code 初次安装确认”，然后重新启动 Claude Code。</div>
+            <label class="check-row"><input type="checkbox" data-check="sf-enable" /> SiliconFlow 已显示“当前启用”</label>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="first-run">
+      <div class="section-head"><div><div class="kicker">Part 03 · First Run</div><h2>完成第一次真实任务</h2></div><p>Claude Code 的工作对象是“当前文件夹”。先创建一个练习文件夹，再从这个文件夹启动。</p></div>
+      <div class="os-switch" role="tablist" aria-label="首次运行系统选择">
+        <button class="os-btn active" data-run-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
+        <button class="os-btn" data-run-os="mac" role="tab" aria-selected="false">⌘ macOS</button>
+      </div>
+      <div class="os-panel" data-run-panel="windows">
+        <div class="command"><div class="command-top"><span>PowerShell</span><button class="copy-btn" data-copy>复制命令</button></div><pre>mkdir "$HOME\Desktop\Claude练习"
+cd "$HOME\Desktop\Claude练习"
+claude</pre></div>
+      </div>
+      <div class="os-panel" data-run-panel="mac" hidden>
+        <div class="command"><div class="command-top"><span>Terminal</span><button class="copy-btn" data-copy>复制命令</button></div><pre>mkdir -p "$HOME/Desktop/Claude练习"
+cd "$HOME/Desktop/Claude练习"
+claude</pre></div>
+      </div>
+      <div class="callout warning"><strong>首次授权提示：</strong>Claude Code 会询问是否信任当前文件夹。这里只是自己新建的练习文件夹，可以确认信任；不要随意信任来源不明的代码目录。</div>
+      <div class="command"><div class="command-top"><span>启动后，把这段话发给 Claude Code</span><button class="copy-btn" data-copy>复制练习任务</button></div><pre>请在当前文件夹创建一个“梅斯医学 AI 工具体验”网页：包含蓝色标题、三个功能卡片和当前日期。完成后告诉我创建了哪些文件，以及如何打开查看。先不要安装任何额外软件。</pre></div>
+      <label class="check-row"><input type="checkbox" data-check="first-task" /> Claude Code 已正常回复并创建文件</label>
+    </section>
+
+    <section id="troubleshoot">
+      <div class="section-head"><div><div class="kicker">Part 04 · Troubleshooting</div><h2>遇到报错，先对照这里</h2></div><p>安装问题和 API 问题要分开判断：能输出版本号代表程序已装好；能正常回答才代表 API 已接通。</p></div>
+      <details><summary>提示 “claude 不是内部或外部命令” / command not found</summary><div><p>先关闭当前终端并重新打开，再运行 <code>claude --version</code>。macOS 还可以运行 <code>source ~/.zshrc</code> 后重试。</p></div></details>
+      <details><summary>npm 出现 EACCES / permission denied</summary><div><p>macOS 不要使用 sudo。回到上面的“设置个人安装目录与国内镜像”，完整执行一次，再重新安装。</p></div></details>
+      <details><summary>提示找不到 native binary package</summary><div><p>通常是 npm 禁用了 optional dependencies。检查 <code>.npmrc</code> 中不要有 <code>optional=false</code>，然后重新运行安装命令，不要添加 <code>--omit=optional</code>。</p></div></details>
+      <details><summary>启动后一直要求 Claude 登录</summary><div><p>先确认 CC Switch 中 Claude → SiliconFlow 卡片已“当前启用”。再进入 CC Switch“设置 → 通用”，开启“跳过 Claude Code 初次安装确认”，关闭终端后重开。</p></div></details>
+      <details><summary>出现 401 / invalid API key / 余额不足</summary><div><p>401 通常表示 Key 填错或已失效：去硅基流动控制台重新复制。余额不足则先检查账户余额和模型计费；API Key 不要带多余空格。</p></div></details>
+      <details><summary>Windows 上命令执行能力不完整</summary><div><p>Claude Code 原生 Windows 可以使用 PowerShell。需要更完整的 Git/Bash 工作流时，可另行安装 Git for Windows；这不是本次完成安装与首次体验的必需项。</p></div></details>
+    </section>
+
+    <section>
+      <div class="section-head"><div><div class="kicker">Before You Start</div><h2>三条安全边界</h2></div></div>
+      <div class="cards">
+        <article class="card"><div class="card-icon">🔑</div><h3>API Key 只放本机</h3><p>不发群、不截图、不提交 GitHub。怀疑泄露，立即删除并重建。</p></article>
+        <article class="card"><div class="card-icon">👁</div><h3>执行前看清操作</h3><p>Claude Code 能读写文件、运行命令。涉及删除、覆盖、安装时，先确认影响范围。</p></article>
+        <article class="card"><div class="card-icon">📁</div><h3>从正确文件夹启动</h3><p>它默认围绕当前文件夹工作。公司敏感资料不要放入未经批准的练习目录。</p></article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><div><div class="kicker">Sources</div><h2>核验来源</h2></div><p>教程基于官方文档与国内镜像实时核验，避免使用来路不明的一键脚本。</p></div>
+      <div class="sources">
+        <a class="source" href="https://code.claude.com/docs/zh-CN/setup" target="_blank" rel="noopener">Claude Code 官方安装文档<small>系统要求、安装、验证、Windows 支持</small></a>
+        <a class="source" href="https://code.claude.com/docs/en/troubleshoot-install" target="_blank" rel="noopener">Claude Code 官方排错文档<small>PATH、权限、原生二进制等常见错误</small></a>
+        <a class="source" href="https://docs.siliconflow.cn/cn/usercases/use-siliconcloud-in-ccswitch" target="_blank" rel="noopener">硅基流动 × CC Switch 官方教程<small>SiliconFlow 预设、端点与验证方法</small></a>
+        <a class="source" href="https://registry.npmmirror.com/" target="_blank" rel="noopener">npmmirror 国内镜像<small>Node.js 与 npm 包国内下载源</small></a>
+      </div>
+    </section>
+
+    <footer><span>梅斯医学 MedSci · 内部 AI 工具培训</span><span>这是一份安装操作页，不会收集或上传你的 API Key。</span></footer>
+  </main>
+
+  <script>
+    const setPanels = (buttonSelector, buttonKey, panelSelector, panelKey) => {
+      document.querySelectorAll(buttonSelector).forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.dataset[buttonKey];
+          document.querySelectorAll(buttonSelector).forEach((item) => {
+            const active = item === button;
+            item.classList.toggle('active', active);
+            item.setAttribute('aria-selected', String(active));
+          });
+          document.querySelectorAll(panelSelector).forEach((panel) => {
+            panel.hidden = panel.dataset[panelKey] !== value;
+          });
+        });
+      });
+    };
+    setPanels('[data-os]', 'os', '[data-panel]', 'panel');
+    setPanels('[data-run-os]', 'runOs', '[data-run-panel]', 'runPanel');
+
+    document.querySelectorAll('[data-copy]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const text = button.closest('.command').querySelector('pre').innerText.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (_) {
+          const area = document.createElement('textarea');
+          area.value = text;
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+        const old = button.textContent;
+        button.textContent = '✓ 已复制';
+        button.classList.add('copied');
+        setTimeout(() => { button.textContent = old; button.classList.remove('copied'); }, 1600);
+      });
+    });
+
+    document.querySelectorAll('[data-check]').forEach((checkbox) => {
+      const key = `medsci-claude-${checkbox.dataset.check}`;
+      checkbox.checked = localStorage.getItem(key) === '1';
+      checkbox.addEventListener('change', () => localStorage.setItem(key, checkbox.checked ? '1' : '0'));
+    });
+  </script>
+</body>
+</html>
