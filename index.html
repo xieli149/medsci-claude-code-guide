@@ -224,7 +224,7 @@
     .download-option strong { font-size: 16px; }
     .download-option small { color: var(--muted); line-height: 1.55; }
     .download-option code { width: fit-content; padding: 3px 6px; border-radius: 6px; color: var(--brand-deep); background: #fff; font-size: 11px; overflow-wrap: anywhere; }
-    .method-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; }
     .method-card { position: relative; display: grid; align-content: start; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 17px; background: #f8fbff; }
     .method-card.recommended { border: 2px solid var(--brand); background: var(--brand-pale); }
     .method-card h4 { margin: 0; color: var(--brand-dark); font-size: 19px; }
@@ -513,19 +513,32 @@
 
         <article class="step">
           <div class="step-index">07</div>
-          <div><h3>根据电脑系统选择配置方式</h3><p>三种方式只选择一种：Windows 选 A，Mac 选 B；能够打开 GitHub、希望使用图形界面时也可以选 C。</p>
-            <div class="method-grid">
-              <div class="method-card recommended"><span class="method-badge">Windows · 国内直接使用 · 已实测成功</span><h4>方式 A：普通 CMD 命令行</h4><p>使用 <code>set</code>、<code>setx</code> 和 <code>%变量%</code>。只适用于 Windows，不要在 Mac 终端执行。</p></div>
-              <div class="method-card recommended"><span class="method-badge">macOS · 国内直接使用 · 官方语法</span><h4>方式 B：Mac 终端命令行</h4><p>使用 <code>export</code>、<code>~/.zshrc</code> 和 <code>$变量</code>。只适用于 Mac，不要在 Windows CMD 执行。</p></div>
-              <div class="method-card"><span class="method-badge">有 VPN / 图形界面更方便</span><h4>方式 C：CC Switch</h4><p>适合能够打开 GitHub 的 Windows 或 Mac。通过图形界面选择 SiliconFlow 预设，无需手动配置环境变量。</p><div class="actions"><a class="btn" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener">下载 CC Switch ↗</a><a class="btn secondary" href="https://ccswitch.io/" target="_blank" rel="noopener">项目官网 ↗</a></div></div>
+          <div><h3>根据电脑系统选择配置方式</h3><p>先点自己的系统，再从页面显示的方式里选择一种。Windows 不显示 Mac 命令，Mac 不显示 Windows 命令。</p>
+            <div class="os-switch" role="tablist" aria-label="选择 API 配置系统" style="margin-top:14px">
+              <button class="os-btn active" data-api-os="windows" role="tab" aria-selected="true">⊞ Windows</button>
+              <button class="os-btn" data-api-os="mac" role="tab" aria-selected="false">⌘ Mac</button>
             </div>
-            <div class="callout warning"><strong>先看清系统：</strong>Windows CMD 命令包含 <code>%SF_KEY%</code>；Mac 终端命令包含 <code>$SF_KEY</code>。两套命令不能交叉复制。</div>
+            <div class="os-panel" data-api-panel="windows">
+              <div class="method-grid">
+                <div class="method-card recommended"><span class="method-badge">Windows · 国内直接使用 · 已实测成功</span><h4>方式 A：普通 CMD 命令行</h4><p>公司 Windows 和个人 Windows 都选这条。使用 <code>set</code>、<code>setx</code> 和 <code>%变量%</code>，只在普通 CMD 执行。</p></div>
+                <div class="method-card"><span class="method-badge">有 VPN / 图形界面更方便</span><h4>方式 C：CC Switch</h4><p>适合能够打开 GitHub 的 Windows。通过图形界面选择 SiliconFlow 预设，无需手动配置环境变量。</p><div class="actions"><a class="btn" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener">下载 CC Switch ↗</a><a class="btn secondary" href="https://ccswitch.io/" target="_blank" rel="noopener">项目官网 ↗</a></div></div>
+              </div>
+              <div class="callout warning"><strong>Windows 学员只看这里：</strong>普通 CMD 命令会出现 <code>%SF_KEY%</code>、<code>set</code> 和 <code>setx</code>。不要复制 Mac 终端里的 <code>export</code> 命令。</div>
+            </div>
+            <div class="os-panel" data-api-panel="mac" hidden>
+              <div class="method-grid">
+                <div class="method-card recommended"><span class="method-badge">macOS · 国内直接使用 · 官方语法</span><h4>方式 B：Mac 终端命令行</h4><p>Mac 用户选这条。使用 <code>export</code>、<code>~/.zshrc</code> 和 <code>$变量</code>，只在 Mac 终端执行。</p></div>
+                <div class="method-card"><span class="method-badge">有 VPN / 图形界面更方便</span><h4>方式 C：CC Switch</h4><p>适合能够打开 GitHub 的 Mac。通过图形界面选择 SiliconFlow 预设，无需手动配置环境变量。</p><div class="actions"><a class="btn" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener">下载 CC Switch ↗</a><a class="btn secondary" href="https://ccswitch.io/" target="_blank" rel="noopener">项目官网 ↗</a></div></div>
+              </div>
+              <div class="callout warning"><strong>Mac 学员只看这里：</strong>Mac 终端命令会出现 <code>$SF_KEY</code>、<code>export</code> 和 <code>~/.zshrc</code>。不要复制 Windows CMD 里的 <code>setx</code> 命令。</div>
+            </div>
           </div>
         </article>
 
         <article class="step">
           <div class="step-index">08</div>
-          <div><h3>完成你选择的配置方式</h3><p>展开自己选择的方式操作。完成其中一种后，直接进入下一部分。</p>
+          <div><h3>完成你选择的配置方式</h3><p>这里只显示当前系统对应的命令行方式；有 VPN、想用图形界面时再展开 CC Switch。</p>
+            <div class="os-panel" data-api-panel="windows">
             <details open><summary>方式 A：Windows 使用普通 CMD（已实测成功）</summary><div>
               <div class="callout danger"><strong>API Key 不要发到聊天里：</strong>下面命令只在 Windows 的普通 CMD 中执行，不要“以管理员身份运行”，也不要复制到 Mac 终端。每次只复制一条。</div>
               <p><strong>第 1 步：把 API Key 临时保存在当前 CMD。</strong>复制后，先把 <code>你的API_KEY</code> 替换成自己新建的真实 Key，再按回车。</p>
@@ -558,7 +571,9 @@
               <div class="callout warning"><strong>最后一步：</strong>关闭所有 CMD、PowerShell、Windows Terminal 和 VS Code 窗口，重新打开普通 CMD。然后进入练习文件夹运行 <code>claude</code>。如果以前永久设置过 <code>ANTHROPIC_AUTH_TOKEN</code>，展开下方排错中的“仍然要求 Claude 登录”处理。</div>
               <label class="check-row"><input type="checkbox" data-check="sf-company-cli-enabled" /> 方式 A 已返回“Claude Code接入成功”并永久保存</label>
             </div></details>
-            <details><summary>方式 B：Mac 使用终端（macOS 专用）</summary><div>
+            </div>
+            <div class="os-panel" data-api-panel="mac" hidden>
+            <details open><summary>方式 B：Mac 使用终端（macOS 专用）</summary><div>
               <div class="callout danger"><strong>不要复制 Windows 命令：</strong>下面只使用 Mac 终端的 <code>export</code>、<code>$变量</code> 和 <code>~/.zshrc</code>。每次只复制一条，执行完成后再复制下一条。</div>
 
               <p><strong>第 1 步：把 API Key 临时保存在当前终端。</strong>复制后，把 <code>你的API_KEY</code> 替换成自己的真实 Key，再按回车。</p>
@@ -594,6 +609,7 @@
               <div class="callout warning"><strong>最后：</strong>关闭终端并重新打开，进入练习文件夹运行 <code>claude</code>。不要把包含 API Key 的 <code>~/.zshrc</code> 截图或发给别人。</div>
               <label class="check-row"><input type="checkbox" data-check="sf-mac-cli-enabled" /> 方式 B 已返回“Claude Code接入成功”并永久保存</label>
             </div></details>
+            </div>
             <details><summary>方式 C：使用 CC Switch（有 VPN）</summary><div>
               <ol class="substeps">
                 <li><b>1</b><span>安装并打开 CC Switch。Windows 下载 <code>Windows.msi</code>；macOS 下载 <code>macOS.dmg</code>。</span></li>
@@ -712,7 +728,16 @@
       });
     };
     setPanels('[data-os]', 'os', '[data-panel]', 'panel');
+    setPanels('[data-api-os]', 'apiOs', '[data-api-panel]', 'apiPanel');
     setPanels('[data-run-os]', 'runOs', '[data-run-panel]', 'runPanel');
+
+    const syncApiOs = (installOs) => {
+      const apiOs = installOs === 'mac' ? 'mac' : 'windows';
+      document.querySelector(`[data-api-os="${apiOs}"]`)?.click();
+    };
+    document.querySelectorAll('[data-os]').forEach((button) => {
+      button.addEventListener('click', () => syncApiOs(button.dataset.os));
+    });
 
     document.querySelectorAll('[data-copy]').forEach((button) => {
       button.addEventListener('click', async () => {
